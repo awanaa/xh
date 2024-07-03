@@ -28,7 +28,7 @@
             </div>
             <div>
                 <div style="display: flex; align-items: center;">
-  <input type="text" id="code" placeholder="输入验证码" style="padding:15px 10px; margin-right:20px;">
+  <input type="text" id="code" placeholder="输入验证码" style="padding:15px 10px; margin-right:20px;" v-model="code">
   <img :src="'data:image/png;base64,' + imgCodeObj.img" alt="验证码" @click="getCode" style="margin-right:10px;">
 </div>
 <!-- <button @click.prevent="getCode" style="margin-top: 20px;">刷新验证码</button> -->
@@ -94,7 +94,7 @@
                 
                
             </div>
-            <button type="submit" class="btn" @click="getToken">登录</button> 
+            <button type="submit" class="btn" @click="getToken" >登录</button> 
             <a href="#" class="mima-forgot">*忘记密码？</a>
         </form>
 
@@ -343,8 +343,8 @@ h1 {
 import { ref, onMounted } from 'vue';
 import axios from 'axios';
 import { useRouter } from 'vue-router';
-const code = ref('your-code');
 
+const code = ref('');//储存用户输入
 const username = ref('your-username');
 const password = ref('your-password');
 const router = useRouter();
@@ -356,14 +356,14 @@ async function getToken() {
     const response = await axios.post<{ token: string }>('http://47.122.17.88:8080/api/v1/user/loginByUsername', {
       username: username.value,
       password: password.value,
-      code:code.value,
+      code: code.value,
       uuid: localStorage.getItem("uuid")
 
     });
 
     const token = response.data.token;
     console.log(token); //打印了，但是控制台没有显示
-    console.log(1211)
+   
     localStorage.setItem('Authorization', token);
 
     router.push({ name: 'home' });
@@ -401,7 +401,6 @@ onMounted(() => {
       shoujihaodenglu.style.display = 'block';
     });
 
-
     zhanhao.addEventListener('click', () => {
       console.log('切换到账号密码登录');
       zhanhao.className = 'act';
@@ -417,4 +416,5 @@ onMounted(() => {
 });
 
 </script>
+
 
