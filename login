@@ -18,12 +18,12 @@
         <form action="#">
             <div class="input-group">
                 <div class="avatars"><img src="@/assets/icon-user.png" alt="User Avatar" class="avatar"></div>
-                <input type="text" id="username" placeholder="账号" class="input-field" data-v-302e3882 autocomplete="username">
-
+                <input type="text" id="username" placeholder="账号" class="input-field" data-v-302e3882 autocomplete="username" v-model="username">
+                <p>{{ username }}</p>
             </div>
             <div class="input-group">
                 <div class="avatars"> <img src="@/assets/密码.png" alt="Lock Icon" class="avatar"></div>
-                <input type="password" id="password" placeholder="密码" class="input-field" autocomplete="current-password">
+                <input type="password" id="password" placeholder="密码" class="input-field" autocomplete="current-password" v-model="password">
                 
             </div>
             <div>
@@ -94,7 +94,7 @@
                 
                
             </div>
-            <button type="submit" class="btn" @click="getToken" >登录</button> 
+            <button  class="btn" @click="getToken" >登录</button> 
             <a href="#" class="mima-forgot">*忘记密码？</a>
         </form>
 
@@ -345,14 +345,16 @@ import axios from 'axios';
 import { useRouter } from 'vue-router';
 
 const code = ref('');//储存用户输入
-const username = ref('your-username');
-const password = ref('your-password');
+const username = ref('');
+const password = ref('');
 const router = useRouter();
 const imgCodeObj = ref<{ img: string }>({ img: '' });
 
 async function getToken() {
   try {
-   
+     console.log(username);
+console.log(password);
+console.log(code);
     const response = await axios.post<{ token: string }>('http://47.122.17.88:8080/api/v1/user/loginByUsername', {
       username: username.value,
       password: password.value,
@@ -360,10 +362,10 @@ async function getToken() {
       uuid: localStorage.getItem("uuid")
 
     });
-
+getToken();
     const token = response.data.token;
     console.log(token); //打印了，但是控制台没有显示
-   
+  
     localStorage.setItem('Authorization', token);
 
     router.push({ name: 'home' });
@@ -412,8 +414,9 @@ onMounted(() => {
 
   // 组件加载时自动获取一次验证码
   getCode();
-   getToken();
+
 });
+
 
 </script>
 
