@@ -362,7 +362,7 @@ console.log(code);
       uuid: localStorage.getItem("uuid")
 
     });
-getToken();
+
     const token = response.data.token;
     console.log(token); //打印了，但是控制台没有显示
   
