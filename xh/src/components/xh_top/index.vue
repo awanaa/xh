@@ -48,6 +48,7 @@
     <template #dropdown>
       <el-dropdown-menu>
         <el-dropdown-item plain @click="open">个人中心</el-dropdown-item>
+    
         <el-dropdown-item>退出登录</el-dropdown-item>
         
       </el-dropdown-menu>
@@ -70,22 +71,64 @@ import { ArrowDown } from '@element-plus/icons-vue'
 
 import { useRoute } from 'vue-router'
 import { ref } from 'vue'
-
+import res from '@/utils/request.ts'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import type { Action } from 'element-plus'
 
+
 const open = () => {
-  ElMessageBox.alert('This is a message', 'Title', {
-    // if you want to disable its autofocus
-    // autofocus: false,
-    confirmButtonText: 'OK',
-    callback: (action: Action) => {
-      ElMessage({
-        type: 'info',
-        message: `action: ${action}`,
-      })
-    },
-  })
+
+  async function getUserInfo() {
+  // 从本地存储中获取 token
+  const token = localStorage.getItem('token');
+  if (token) {
+    try {
+      // 发送请求获取用户信息
+      const response = await res.get('/user/getInfo')
+      console.log(response.data);
+showUserInfo(response.data);
+    } catch (error) {
+      console.error(error);
+    }
+  } else {
+    console.error('Token not found in local storage');
+  }
+}
+
+
+
+// 调用 getUserInfo 函数
+ getUserInfo();
+function showUserInfo(userInfo:any) {
+    // 将用户信息格式化为 HTML 字符串
+    const userInfoHTML = `
+      <ul>
+        <li><strong>用户名：</strong>${userInfo.userName}</li>
+        <li><strong>性别：</strong>${userInfo.gender}</li>
+        <li><strong>年龄：</strong>${userInfo.age}</li>
+        <li><strong>手机号：</strong>${userInfo.phone}</li>
+         <li><strong>账户id：</strong>${userInfo.accountId}</li>
+          <li><strong>年级：</strong>${userInfo.level}</li>
+           <li><strong>描述：</strong>${userInfo.description}</li>
+           <li><strong>学习风格：</strong>${userInfo.studyStyle}</li>
+           <li><strong>学习习惯：</strong>${userInfo.studyHabit}</li>
+      </ul>
+    `;
+
+    // 使用 ElMessageBox.alert 方法显示弹窗
+    ElMessageBox.alert(userInfoHTML, '用户个人信息', {
+      dangerouslyUseHTMLString: true, // 允许 message 参数包含 HTML
+      customClass: 'custom-message-box',
+      confirmButtonText: '确定',
+      callback: (action:any) => {
+        ElMessage({
+          type: 'info',
+          message: `操作: ${action}`,
+        });
+      },
+    });
+  }
+
 }
 const route = useRoute()
 
@@ -97,6 +140,10 @@ const activeIndex = ref(route.name)
 </script>
 
 <style scoped lang="scss">
+.el-message-box {
+  width: 50% !important; /* 设置宽度为屏幕宽度的50% */
+  max-width: 600px; /* 最大宽度限制 */
+}
 
 .example-showcase .el-dropdown-link {
   cursor: pointer;
