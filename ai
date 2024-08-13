@@ -1,0 +1,96 @@
+<template>
+	<view class="container">
+		<view class="input">
+			<input type="text" class="myInput" placeholder="请来问问AI学姐" v-model="inputMessage" />
+			<button class="icon-btn" @tap="sendMessage" open-type="getUserInfo" @getuserinfo.stop="getinfo">
+				<image src="/static/搜索.png" mode="widthFix"></image>
+			</button>
+		</view>
+		<view >
+			<view class="container-ai">
+				<view class="chat-list">
+					<view v-for="message in messages" :key="message.id" class="chat-item">
+						<!-- AI消息 -->
+						<view v-if="message.sender === 'ai'" class="chat-ai">
+							<image src="https://mp-16c0e27b-8eaf-4c16-9806-d97bb8279c25.cdn.bspapp.com/prc/3person.png"
+								alt="AI头像" mode="widthFix" class="avatar ai-avatar" />
+							<view class="message ai-message">{{ message.content }}</view>
+						</view>
+						<!-- 用户消息 -->
+						<view v-else class="chat-user">
+							<view class="message user-message">{{ message.content }}</view>
+							<image :src="src" alt="用户头像" class="avatar user-avatar" />
+						</view>
+					</view>
+				</view>
+			</view>
+		</view>
+
+	</view>
+</template>
+
+
+
+<script>
+	export default {
+		data() {
+			return {
+				messages: [],
+				userInput: '',
+				inputMessage: '',
+				src: ''
+			};
+		},
+		methods: {
+			getinfo(e) {
+				const usersrc = e.detail.userInfo.avatarUrl;
+				this.src = usersrc;
+			},
+			sendMessage() {
+				
+				if (this.inputMessage.trim() !== '') {
+					this.messages.push({
+						content: this.inputMessage,
+						sender: 'user'
+					});
+					
+
+					// 调用AI对话接口
+					this.generateAiResponse((aiResponse) => {
+						// 将AI的回复添加到消息列表
+						this.messages.push({
+							content: aiResponse,
+							sender: 'ai'
+						});
+						this.$emit('aiReplied');
+					});
+					this.inputMessage = ''; // 清空输入框
+				}
+			},
+			
+			generateAiResponse(callback) {
+				// 发送请求到AI对话系统
+				console.log( this.inputMessage)
+				uni.request({
+					data: {
+						"session_id": "66af7f2ba7c432be30412ee5",
+						"input":this.inputMessage,
+						"output":""
+					},					
+					url: `http://8.210.102.232:54823/chat`,
+					method: 'POST',
+					dataType: 'json',
+					success: res => {
+						console.log('请求成功了', res);
+						console.log(res.data.output)
+						callback && callback('AI回复：' + (res.data.output || '抱歉，我暂时无法回答这个问题。'));
+					},
+					fail: err => {
+						console.error('请求失败:', err);
+						callback && callback('AI回复：抱歉，我暂时无法回答这个问题。');
+					}
+				});
+			}
+		}
+	};
+</script>
