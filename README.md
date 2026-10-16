@@ -1,11 +1,11 @@
-# xh — Smart Campus Platform (Student Client)
+# xh — 星火教育平台 Xinghuo Education Platform (Student Client)
 
 > **Competition project** — Vue 3 + Vite + Element Plus · Student-facing web app
 > 学生向けキャンパスプラットフォーム（学生端）
 
 ## About
 
-`xh` is the student client of a smart campus / sports management platform,
+`xh` is the student client of **星火教育平台 (Xinghuo Education Platform)**,
 built for a campus innovation competition (大赛参赛作品).
 
 It provides students with daily school-life features: home dashboard with calendar
