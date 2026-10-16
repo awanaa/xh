@@ -5,8 +5,8 @@
 
 ## About
 
-`xh` is the student client of a smart campus / sports management platform, built for
-**【competition name TBD / 比赛名称待填】**.
+`xh` is the student client of a smart campus / sports management platform,
+built for a campus innovation competition (大赛参赛作品).
 
 It provides students with daily school-life features: home dashboard with calendar
 and announcements, learning progress tracking, leave application (请假), notice
